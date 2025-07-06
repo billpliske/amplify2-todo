@@ -11,8 +11,12 @@ const todos = ref<Array<Schema['Todo']["type"]>>([]);
 
 function listTodos() {
   client.models.Todo.observeQuery().subscribe({
-    next: ({ items, isSynced }) => {
-      todos.value = items
+    next: ({ items }) => {
+      todos.value = [...items].sort((a, b) => {
+        const dateA = new Date(a.eventDate || '');
+        const dateB = new Date(b.eventDate || '');
+        return dateA.getTime() - dateB.getTime(); // ascending
+      });
     },
   });
 }
