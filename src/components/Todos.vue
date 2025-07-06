@@ -13,21 +13,22 @@ function listTodos() {
   client.models.Todo.observeQuery().subscribe({
     next: ({ items, isSynced }) => {
       todos.value = items
-     },
-  }); 
+    },
+  });
 }
 
 function createTodo() {
   client.models.Todo.create({
-    content: window.prompt("Todo content")
+    content: window.prompt("Todo content"),
+    eventDate: window.prompt("Event date (YYYY-MM-DD)"),
   }).then(() => {
     // After creating a new todo, update the list of todos
     listTodos();
   });
 }
-    
+
 // fetch todos when the component is mounted
- onMounted(() => {
+onMounted(() => {
   listTodos();
 });
 
@@ -38,10 +39,9 @@ function createTodo() {
     <h1>My todos</h1>
     <button @click="createTodo">+ new</button>
     <ul>
-      <li 
-        v-for="todo in todos" 
-        :key="todo.id">
-        {{ todo.content }}
+      <li v-for="todo in todos"
+          :key="todo.id">
+        {{ todo.content }}, {{ todo.eventDate ? new Date(todo.eventDate).toLocaleDateString() : 'No date' }}
       </li>
     </ul>
     <div>
